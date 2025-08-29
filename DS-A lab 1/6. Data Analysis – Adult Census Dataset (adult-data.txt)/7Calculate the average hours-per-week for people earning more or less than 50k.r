@@ -1,6 +1,5 @@
 # Load the dataset
-data <- read.table("M:/codes wagera/R/R/DS-A lab 1/6. Data Analysis – Adult Census Dataset (adult-data.txt)/adult-data.txt",
-                   header = FALSE, sep = ",", strip.white = TRUE)
+data <- read.table(file.choose(),header = FALSE, sep = ",", strip.white = TRUE)
 
 # Assign column names
 colnames(data) <- c("age", "workclass", "fnlwgt", "education", "education_num",

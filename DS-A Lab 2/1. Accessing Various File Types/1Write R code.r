@@ -1,10 +1,10 @@
 # load csv file
-data1 <- read.csv(file.choose()) # choose csv file from the directory
+data1 <- read.csv(file.choose()) # choose dataset_Facebook.csv file from the directory
 View(data1)
 
 #load excel file
 library(readxl)
-data2 <- read_excel(file.choose()) # choose excel file from the directory
+data2 <- read_excel(file.choose()) # choose LungCap_dataset.excel file from the directory
 View(data2)
 
 #load text file

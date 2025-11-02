@@ -1,42 +1,60 @@
-# Load the necessary libraries
 install.packages("dplyr")
+install.packages("readxl")
+
 library(dplyr)
+library(readxl)
 
-# Read the dataset from the uploaded CSV file
-# The delimiter is specified as a semicolon based on the file preview.
-df <- read.csv(file.choose(), sep = ";")
+file_path <- file.choose()
 
-# Rename columns for easier access
-names(df) <- c("Page_total_likes", "Type", "Category", "Post_Month", "Post_Weekday", "Post_Hour", "Paid",
-               "Lifetime_Post_Total_Reach", "Lifetime_Post_Total_Impressions", "Lifetime_Engaged_Users",
-               "Lifetime_Post_Consumers", "Lifetime_Post_Consumptions",
-               "Lifetime_Post_Impressions_by_people_who_have_liked_your_Page",
-               "Lifetime_Post_reach_by_people_who_like_your_Page",
-               "Lifetime_People_who_have_liked_your_Page_and_engaged_with_your_post",
-               "Comments", "Likes", "Shares", "Total_Interactions")
+# Read the Excel file
+# read_excel() will automatically find the first sheet
+df_original <- read_excel(file_path)
 
-# 1. Find the post with the maximum number of likes
-# We first identify the maximum value in the "Likes" column.
+# --- Rename columns ---
+df <- df_original %>%
+  rename(
+    Page_total_likes = `Page total likes`,
+    Type = Type,
+    Category = Category,
+    Post_Month = `Post Month`,
+    Post_Weekday = `Post Weekday`,
+    Post_Hour = `Post Hour`,
+    Paid = Paid,
+    Lifetime_Post_Total_Reach = `Lifetime Post Total Reach`,
+    Lifetime_Post_Total_Impressions = `Lifetime Post Total Impressions`,
+    Lifetime_Engaged_Users = `Lifetime Engaged Users`,
+    Lifetime_Post_Consumers = `Lifetime Post Consumers`,
+    Lifetime_Post_Consumptions = `Lifetime Post Consumptions`,
+    Lifetime_Post_Impressions_by_people_who_have_liked_your_Page = `Lifetime Post Impressions by people who have liked your Page`,
+    Lifetime_Post_reach_by_people_who_like_your_Page = `Lifetime Post reach by people who like your Page`,
+    Lifetime_People_who_have_liked_your_Page_and_engaged_with_your_post = `Lifetime People who have liked your Page and engaged with your post`,
+    Comments = comment,
+    Likes = like,
+    Shares = share,
+    Total_Interactions = `Total Interactions`
+  )
+
+# --- 1. Find the post with the maximum number of likes ---
 max_likes <- max(df$Likes, na.rm = TRUE)
 
-# Then, we filter the data frame to find the row(s) with this value.
 post_with_max_likes <- df %>%
   filter(Likes == max_likes)
 
-print("Post with the maximum number of likes:\n")
+print("--- 1. Post with the maximum number of likes ---")
 print(post_with_max_likes)
-
-# 2. Calculate the average number of shares per post
-# We use the mean() function on the "Shares" column.
+cat("\nMaximum number of likes:", max_likes, "\n")
+# --- 2. Calculate the average number of shares per post ---
 average_shares <- mean(df$Shares, na.rm = TRUE)
 
-cat("\nAverage number of shares per post:", average_shares, "\n")
+cat("\n--- 2. Average number of shares per post ---\n")
+cat(sprintf("%.2f", average_shares), "\n")
 
-# 3. Create a new column Engagement = Likes + Comments + Shares
-# We use mutate() to add the new "Engagement" column.
+
+# --- 3. Create a new column Engagement = Likes + Comments + Shares ---
 df_with_engagement <- df %>%
-  mutate(Engagement = Likes + Comments + Shares)
+  mutate(
+    Engagement = coalesce(Likes, 0) + coalesce(Comments, 0) + coalesce(Shares, 0)
+  )
 
-# Print the first few rows of the new dataframe to show the added column
-print("\nData frame with the new 'Engagement' column:\n")
-head(df_with_engagement)
+cat("\n--- 3. Data frame with new 'Engagement' column (first 5 rows) ---\n")
+print(head(df_with_engagement %>% select(Type, Comments, Likes, Shares, Engagement)))

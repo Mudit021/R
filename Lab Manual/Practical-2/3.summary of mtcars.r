@@ -1,3 +1,0 @@
-data(mtcars)
-
-summary(mtcars)

@@ -4,7 +4,7 @@ install.packages("leaflet")
 library(tidyverse)
 library(leaflet)
 
-# 2. LOAD DATA
+# LOAD DATA
 file_path <- "cleaned_synthetic_traffic_accident_data.csv"
 
 tryCatch({
@@ -15,7 +15,7 @@ tryCatch({
 })
 
 
-# 3. EXPLORATORY DATA ANALYSIS (EDA)
+# EXPLORATORY DATA ANALYSIS (EDA)
 
 if (exists("accidents_df")) {
   
@@ -28,7 +28,7 @@ if (exists("accidents_df")) {
   str(accidents_df)
   
 
-  # 4. VISUALIZATION: ACCIDENTS BY WEATHER CONDITION
+  #  VISUALIZATION: ACCIDENTS BY WEATHER CONDITION
 
   weather_counts <- accidents_df %>%
     count(Weather_Condition) %>%
@@ -52,7 +52,7 @@ if (exists("accidents_df")) {
   message("\nSaved 'accidents_by_weather.png'")
   
 
-  # 5. VISUALIZATION: ACCIDENTS BY DAY OF WEEK
+  #  VISUALIZATION: ACCIDENTS BY DAY OF WEEK
 
   day_order <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
   
@@ -77,7 +77,7 @@ if (exists("accidents_df")) {
   message("Saved 'accidents_by_day.png'")
   
 
-  # 6. HOTSPOT MAPPING: VISUALIZING CLUSTERS
+  #  HOTSPOT MAPPING: VISUALIZING CLUSTERS
   accidents_df$Cluster <- as.factor(accidents_df$Cluster)
   
   # Get the number of unique clusters
@@ -118,7 +118,7 @@ saveWidget(hotspot_map, file = "accident_hotspot_map.html")
 message("Saved interactive map 'accident_hotspot_map.html'")
   
   
-  # 7.RUNNING CLUSTERING
+  # RUNNING CLUSTERING
 
 coords <- accidents_df %>% select(Start_Lat, Start_Lng)
   
